@@ -42,6 +42,8 @@ SQL支持许多内置的数据类型，并且允许用户定义新的域（数�
 
 - 使用当前数据库服务器下的某一个数据库：use 数据库名称;
 
+- 查看数表：show tables;
+
 - 创建数据库：create database 数据库名称；
 
 - 删除数据库：drop database 数据库名称
@@ -154,15 +156,11 @@ alter table <表名> drop [column] <列名> {cascade | restrict}
 
 alter table Courses drop Pno;
 
-
-
 (4)添加表约束
 
 alter table <表名> add <表约束定义>
 
 其中表约束定义与创建基本表相同。
-
-
 
 (5)删除表约束
 
@@ -170,15 +168,9 @@ alter table <表名> drop constraint <约束名> {cascade | restrict}
 
 其中被删除的约束名一定是命名的约束，给出约束名。cascade导致删除约束并且同时删除依赖于该约束的数据库对象。而restrict仅当不存在依赖于该约束的数据库对象才可以删除该约束。
 
-
-
 ```
 
-
-
 - 删除基本表
-
-
 
 ```
 
@@ -198,13 +190,8 @@ drop table Student restrict;
 
 - 添加
 
-
-
 ```
-
 insert语句有两种使用形式，一种是向基本表中插入单个元组；另一种是将查询的结果（多个元组）插入基本表。
-
-
 
 1）插入单个元组
 
@@ -261,16 +248,10 @@ from Teachers;
 select语句个一般形式为：
 
 select [all | distinct] <选择序列>
-
 from <表引用>,...,<表引用>
-
 [where <选择条件>]
-
 [group by <分组列>,...,<分组列> [having <分组选择条件>]]
-
 [order by <排序列> [asc | desc] ,..., <排序列> [asc | desc]]
-
-
 
 select语句包含5个子句，其中最基本的结构是select-from-where，并且select子句和from子句是必需得，其他子句都是可选的。
 
@@ -354,25 +335,18 @@ select语句包含5个子句，其中最基本的结构是select-from-where，�
         其中op是比较运算符（<, <=, >, >=, =, <>或!=），<值表达式1> 和 <值表达式2>都是可求值的表达式。
 
         eg.
-
         select distinct Sno
-
         from SC
-
         where Grade>60;
 
 	2. between表达式
 
 		between表达式判定一个给定的值是否在给定的闭区间内，常见形式为：
-
         <值表达式> [not] between <下界> and <上界>
 
         eg.查询出生年份在1987~1990的学生姓名和专业
-
         select Sname, Speciality
-
         from Students
-
         where year(Birtthday) between 1987 and 1990;
 
 	3. in表达式
@@ -435,10 +409,7 @@ where Grade IS NULL;
 - 连接查询
 
 ```
-
 涉及到多个表的查询通常称为连接查询
-
-
 
 eg.查询学号为200605098的学生的各科成绩，对每门课显示课程名和成绩。
 
@@ -449,8 +420,6 @@ from SC, Courses
 where SC.Cno=Courses.Cno and Sno='200605098';
 
 其中SC.Cno=Courses.Cno称为连接条件，相同于求SC和Courses的自然连接。而Sno='200605098'则是查询条件。当属性只是from子句中一个表的属性时，前缀可以省略。
-
-
 
 eg.查询每个学生的平均成绩，并输出平均成绩大于85的学生学号、姓名和平均成绩。
 
@@ -463,8 +432,6 @@ where Students.Sno=SC.Sno
 group by Student.Sno, Sname
 
 having avg(Grade)>85;
-
-
 
 eg.查询和小李出生年月相同的学生的姓名
 
@@ -482,29 +449,19 @@ S2.Sname<>'小李';
 
 ```
 
-
-
 - 嵌套查询
 
 
-
 ```
-
 我们将一个查询嵌套在另一个查询中的查询称为嵌套查询，并称前者为子查询（内层查询），后者为父查询（外层查询）。子查询中不能使用order by子句。
 
-
-
 嵌套查询可以分为两类：不相关子查询的子查询的条件不依赖与父查询；而相关子查询的子查询的查询条件依赖于父查询。
-
-
 
 1. in引出的子查询
 
 	in表达式的第二种形式可以更一般地判定集合成员资格，其形式如下：
 
     <元组> [not] in <子查询>
-
-    
 
     eg.查询和小李在同一个专业学习的女同学的学号的姓名
 
@@ -524,7 +481,6 @@ S2.Sname<>'小李';
 
     这是一个不相关的子查询。系统先执行子查询，得到小李所在的专业。如果小李只有一个，则子查询的结果是单个值。此时，可以将“Speciality in”用“Speciality=”替代。
 
-    
 
 2. 集合的比较引出的子查询
 
@@ -534,56 +490,34 @@ S2.Sname<>'小李';
 
     其中h是比较运算符（=, <>, !=, <, >, >=, <=）。some和any的含义相同。但现在更多地使用some。当<子查询>的结果为单个值时，all，some，any可以省略。
 
-    
 
     eg.查询比软件工程专业都小的其他专业的学生的学号、姓名、专业和出生日期。
 
     select Sno, Sname, Speciality, Birthday
-
     from Students
-
-    where Speciality <> '软件工程' and 
-
+    where Speciality <> '软件工程' and
     Birthday > all (
-
     select Birthday
-
     from Student
-
     where Speciality='软件工程'
-
     );
-
-    
 
     也可以使用聚集函数实现：
 
     select Sno, Sname, Speciality, Birthday
-
     from Students
-
     where Speciality <> '软件工程' and
-
     Birthday > (
-
     select max(Birthday)
-
     from Students
-
     where  Speciality='软件工程'
-
     );
 
 ```
 
-
-
 - 分组
 
-
-
 ```
-
 按属性分组，再使用聚集函数
 
 一般形式如下：
@@ -596,8 +530,6 @@ group by <分组列> {, <分组列>} [having <分组选择条件>]
 
 带group by子句的select语句的执行效果相当于：首先对from子句中的表计算笛卡尔积，再根据where子句的查询条件从中选择满足查询条件的元组，得到查询的中间结果。然后，暗中group by子句指定的一个或多个列队中间元组进行分组，在这些列上的值相等的元组分为一组；按照having短语中的分组选择条件过滤掉不满足条件的分组。最后，投影到select子句的结果列上，得到查询的回答。
 
-
-
 eg.查询每个学生的平均成绩，并输出平均成绩大于85的学生序号和平均成绩
 
 select Sno, avg(Grade)
@@ -608,13 +540,7 @@ group by Sno having avg(Grade)>85;
 
 ```
 
-
-
-
-
 - 删除
-
-
 
 ```
 
@@ -622,25 +548,17 @@ group by Sno having avg(Grade)>85;
 
 delete from T [where <删除条件>]
 
-
-
 其中T通常为基本表，但也可以是某些视图，<删除条件>与select语句中的查询条件类似。
 
 delete语句的功能是从指定的表T中删除满足<删除条件>的所有元组。where子句缺省时，则删除表T中全部元组（剩下一个空表T）。
-
-
 
 删除所有学生的记录：
 
 delete from Students;
 
-
-
 删除学号为200624010的学生记录可以用：
 
 delete from Students where Sno='200624010';
-
-
 
 尽管delete语句只能从一个表删除元组，但是删除条件可以涉及到多个表
 
@@ -655,14 +573,8 @@ where Sno In
 (
 
 select Sno
-
 from Students
-
 where Speciality='计算机');
-
-
-
-
 
 区分：truncate 、delete与drop
 
@@ -671,8 +583,6 @@ where Speciality='计算机');
 1.truncate和不带where子句的delete、以及drop都会删除表内的数据。
 
 2.drop、truncate都是DDL语句(数据定义语言),执行后会自动提交。
-
-
 
 不同点：
 
@@ -687,8 +597,6 @@ truncate、drop 是数据库定义语言(ddl)，操作立即生效，原数据�
 4. 安全性：小心使用 drop 和 truncate，尤其没有备份的时候。
 
 5. delete是DML语句,不会自动提交。drop和truncate都是DDL语句,执行后会自动提交。
-
-
 
 eg.
 
@@ -706,67 +614,35 @@ rollback;
 
 结果：数据回滚
 
-
-
 ```
 
 事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。
 
-
-
 事务通常以begin transaction开始，以commit或rollback结束。commit表示提交，即提交事务的所有操作。具体地说就是将事务中所有对数据库的更新写会到磁盘上的物理数据库中去，事务正常结束。rollback表示回滚，即在事务运行的过程中发生了某种故障，事务不能运行，系统将事务中对数据库的所有已经完成的操作全部撤销，滚回到事务开始的状态。
-
-
 
 事务的特点：
 
-
-
 原子性（Atomicity）:操作要么全做，要么全部做。
-
-
 
 一致性（Consistency）：事务执行的结果必须是使数据库从一个一致性状态变到另一个一致性状态。
 
-
-
 隔离型（Isolation）：一个事务的执行不能被其他事务干扰。
-
-
 
 持续性（Durability）：一个事务一旦提交，它对数据库的改变就应该是永久性的，不会被回滚。
 
-
-
-
-
-
-
-
-
-
-
 - 修改
-
-
 
 ```
 
 使用update语句可以修改表中某些元组指定属性上的值。格式为：
 
 update T
-
 set A1=e1,...,Ak=ek
-
 [where <修改条件>]
-
-
 
 其中T通常为基本表，但也可以是某些视图；A1,...Ak是T的属性，而e1,...ek是表达式；<修改条件>与select语句中的查询条件类似
 
 该语句的功能是：修改表T满足<修改条件>的元组。更具体的说，对于表T中没个满足<修改条件>的元组t，求表达式ei的值，并将它赋予元组t的属性Ai。where子句缺省时，则修改表T中全部元组。
-
-
 
 update语句只能修改一个表的元组。但是，修改条件中可以包含涉及其他表的子查询。
 
@@ -775,54 +651,34 @@ update语句只能修改一个表的元组。但是，修改条件中可以包�
 先得到微积分课程的课程号，再修改微积分成绩
 
 update SC
-
 set Grade=Grade+5
-
 where Grade < 60 and Cno in
-
 (select Cno
-
 from Courses
-
 where Cname='微积分'
-
 );
-
-
 
 ```
 
 
-
-
-
 - SQL函数
-
-	
 
     SQL的函数可以单独使用也可以配合group by(分组)子句使用。单独使用时，聚集函数作用于整个查询结果；而与group by子句配合使用时，聚集函数作用于查询结果的每个分组。聚集函数单独使用时，可以认为整个查询结果形成一个分组。
 
     SQL的聚集函数有如下形式：
 
-    
-
     	count([all | distinct] *) 或 <聚集函数> ([all | distinct] <值表达式>)
 
         其中[all | distinct]可选，缺省时为all，使用distinct将删除多重集中的重复元素
 
-        
-
 	- 计数
 
 	```
-
     返回元组中元素的个数
 
    格式：select count(参数) from 表名;
 
    参数可以是栏位（列）的序列号，按照属性定义的次序从零开始，也可以是栏位的名称。最好选择主键作为参数，查询速度快。
-
-   
 
    eg.
 
@@ -832,16 +688,11 @@ where Cname='微积分'
 
    select count(栏位名) from 表名;
 
-   
-
     ```
 
 	- 求和函数
 
-	
-
 	```
-
     将对每个元组中的分组，在某个属性的不同值上求和
 
 		sum(栏位名 or 栏位序号)
@@ -850,107 +701,61 @@ where Cname='微积分'
 
 	- 查询最大值最小值平均值
 
-	
-
     ```
-
     查询CS302课程成绩最低分、平均分和最高分
 
     select min(Grade), max(Grade), avg(Grade)
-
     from SC
-
     where Cno='CS302';
-
-    
 
     查询每个学生的平均成绩，并输出平均成绩大于85的学生序号和平均成绩
 
     select Sno, avg(Grade)
-
     from sc
-
     group by Sno having avg(Grade)>85;
 
 	```
 
-    
-
 	- 查询并使用逻辑运算
 
-
-
 	```
-
-    select * 
-
+    select *
     from user
-
 	user where score >= 80 and score <= 90;
-
 	```
-
-    
 
 	- 数据排序
 
-	
-
     ```
-
     order by 栏位名 asc；   (升序（default）,默认情况可以不写asc)
-
-    order by 栏位名 desc;   (降序) 
-
-    
+    order by 栏位名 desc;   (降序)
 
     查询每个学生CS202课程的成绩，并将查询结果按成绩降序排序
 
     select *
-
     from SC
-
     where Cno='CS202'
-
     order by Grade desc;
-
-    
 
     查询每位学生的每门课的成绩，并将查询结果按课程号升序、成绩降序排序
 
     select *
-
     from SC
-
     order by Cno, Grader desc;
-
 	```
-
-    
 
     - 分页函数
 
-
-
 	```
-
     select * from 表名  limit [offset,] rows | rows OFFSET offset
-
-    
 
     limit子句可以被用于强制 select 语句返回指定的记录数。limit 接受一个或两个数字参数。参数必须是一个整数常量。如果给定两个参数，第一个参数指定第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目。初始记录行的偏移量是 0(而不是 1)
 
-    
-
     select * from table limit 5,10;    //检索记录行6-15
-
-    
 
     //检索从某一个偏移量到记录集的结束所有的记录行，可以指定第二个参数为-1：
 
 	select * from table limit 95,-1; // 检索记录行 96-last.
-
-    
 
     //如果只给定一个参数，它表示返回最大的记录行数目： 
 
@@ -958,9 +763,7 @@ where Cname='微积分'
 
 	```
 
-    
     - 加密函数
-
 
     ```
 
@@ -973,7 +776,7 @@ where Cname='微积分'
     //注意，进行加密则密码的数据长度至少为60位字符
 
 	```
-    
+
 - SQL JOIN
 
 	SQL join 用于根据两个或多个表中的列之间的关系，从这些表中查询数据。
